@@ -6,26 +6,36 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   root: {
-    width:"100%",
-    marginTop:theme.spacing(3),
+    width: "100%",
+    marginTop: theme.spacing(3),
     overflowX: "auto"
   },
   table: {
     minWidth: 1080
+  },
+  progress: {
+    margin: theme.spacing(3),
   }
 })
 
 class App extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      customers:""
+      customers: "",
+      completed: 0
     }
   };
+
+  progress = () => {
+    const { completed } = this.state;
+    this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
+  }
 
   callApi = async () => {
     const response = await fetch('/api/customers');
@@ -33,9 +43,10 @@ class App extends React.Component {
     return body;
   };
 
-  componentDidMount(){
+  componentDidMount() {
+    this.timer = setInterval(this.progress, 20);
     this.callApi().then(
-      res => this.setState({customers:res})
+      res => this.setState({ customers: res })
     ).catch(
       err => console.log(err)
     )
@@ -57,20 +68,23 @@ class App extends React.Component {
         </TableHead>
         <TableBody>
           {this.state.customers ?
-           this.state.customers.map((customer) => {
-            return (
-              <Customer
-                key={customer.id}
-                id={customer.id}
-                image={customer.image}
-                name={customer.name}
-                birth={customer.birth}
-                sex={customer.sex}
-                job={customer.job}
-              />
-            )
-           })
-           : "isLoading"
+            this.state.customers.map((customer) => {
+              return (
+                <Customer
+                  key={customer.id}
+                  id={customer.id}
+                  image={customer.image}
+                  name={customer.name}
+                  birth={customer.birth}
+                  sex={customer.sex}
+                  job={customer.job}
+                />
+              )
+            })
+            : <TableRow>
+              <TableCell colSpan="6" align="center"><CircularProgress className={classes.progress} variant="determinate" value={this.state.completed} />
+              </TableCell>
+            </TableRow>
           }
         </TableBody>
       </Table>
