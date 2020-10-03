@@ -1,14 +1,15 @@
 {
     "name": "management",
     "version": "1.0.0",
-    "script": {
+    "scripts": {
         "client": "cd client && npm start",
-        "nodemon": "nodemon server.js",
+        "server": "nodemon server.js",
         "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
     },
     "dependencies": {
         "body-parser": "^1.18.3",
         "express": "^4.16.4",
+        "http-proxy-middleware": "^1.0.5",
         "nodemon": "^2.0.4"
     },
     "devDependencies": {
