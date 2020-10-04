@@ -76,7 +76,7 @@ class App extends React.Component {
                   image={customer.image}
                   name={customer.name}
                   birth={customer.birth}
-                  sex={customer.sex}
+                  sex={customer.gender}
                   job={customer.job}
                 />
               )
