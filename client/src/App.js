@@ -1,5 +1,6 @@
 import React from 'react';
 import Customer from './components/Customer';
+import CustomerAdd from './components/CustomerAdd';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
@@ -35,7 +36,7 @@ class App extends React.Component {
   progress = () => {
     const { completed } = this.state;
     this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
-  }
+  };
 
   callApi = async () => {
     const response = await fetch('/api/customers');
@@ -54,7 +55,8 @@ class App extends React.Component {
 
   render() {
     const { classes } = this.props;
-    return <Paper className={classes.root}>
+    return <div>
+      <Paper className={classes.root}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -89,6 +91,8 @@ class App extends React.Component {
         </TableBody>
       </Table>
     </Paper>
+    <CustomerAdd />
+    </div>
   };
 }
 
