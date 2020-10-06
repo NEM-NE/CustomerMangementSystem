@@ -33,6 +33,19 @@ class App extends React.Component {
     }
   };
 
+  stateRefresh = () => {
+    this.setState({
+      customers: "",
+      completed: 0
+    });
+    this.callApi().then(
+      res => this.setState({ customers: res })
+    ).catch(
+      err => console.log(err)
+    )
+  }
+
+
   progress = () => {
     const { completed } = this.state;
     this.setState({ completed: completed >= 100 ? 0 : completed + 1 });
@@ -66,6 +79,7 @@ class App extends React.Component {
             <TableCell>생일</TableCell>
             <TableCell>성별</TableCell>
             <TableCell>직업</TableCell>
+            <TableCell>setting</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -80,6 +94,7 @@ class App extends React.Component {
                   birth={customer.birth}
                   sex={customer.gender}
                   job={customer.job}
+                  stateRefresh={this.stateRefresh}
                 />
               )
             })
@@ -91,8 +106,8 @@ class App extends React.Component {
         </TableBody>
       </Table>
     </Paper>
-    <CustomerAdd />
-    </div>
+    <CustomerAdd stateRefresh={this.stateRefresh}/>
+    </div>  
   };
 }
 
