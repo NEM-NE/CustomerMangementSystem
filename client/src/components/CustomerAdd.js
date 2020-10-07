@@ -1,16 +1,30 @@
 import React from 'react';
-import {post} from 'axios';
+import { post } from 'axios';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+    hidden: {
+        display: 'none'
+    }
+})
 
 class CustomerAdd extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             file: null,
-            userName:'',
-            birth:'',
-            sex:'',
-            job:'',
-            fileName:''
+            userName: '',
+            birth: '',
+            sex: '',
+            job: '',
+            fileName: '',
+            open: false
         }
     }
 
@@ -21,14 +35,15 @@ class CustomerAdd extends React.Component {
                 console.log(response.data);
                 this.props.stateRefresh();
             })
-        
+
         this.setState({
-            file:null,
-            userName:'',
-            birth:'',
-            sex:'',
-            job:'',
-            fileName:''
+            file: null,
+            userName: '',
+            birth: '',
+            sex: '',
+            job: '',
+            fileName: '',
+            open:false
         })
 
         this.props.stateRefresh();
@@ -36,8 +51,8 @@ class CustomerAdd extends React.Component {
 
     handleFileChange = (e) => {
         this.setState({
-            file:e.target.files[0],
-            fileName:e.target.value
+            file: e.target.files[0],
+            fileName: e.target.value
         })
     }
 
@@ -59,26 +74,63 @@ class CustomerAdd extends React.Component {
 
         const config = {
             headers: {
-                'content-type':'multipart/form-data'
+                'content-type': 'multipart/form-data'
             }
         }
 
         return post(url, formData, config);
     }
 
-    render(){
+    handleClickOpen = () => {
+        this.setState({
+            open: true
+        })
+    }
+
+    handleClickClose = () => {
+        this.setState({
+            file: null,
+            userName: '',
+            birth: '',
+            sex: '',
+            job: '',
+            fileName: '',
+            open: false
+        })
+    }
+
+    render() {
+        const { classes } = this.props;
         return (
-            <form onSubmit={this.handleFormSubmit}>
-                <h1>고객 추가</h1>
-                이미지 : <input type="file" name="file" file={this.state.file} value={this.state.fileName} onChange={this.handleFileChange}/><br/>
-                이름 : <input type="text" name="userName" value={this.state.userName} onChange={this.handleValueChange}/><br/>
-                생년월일 : <input type="text" name="birth" value={this.state.birth} onChange={this.handleValueChange}/><br/>
-                성별 : <input type="text" name="sex" value={this.state.sex} onChange={this.handleValueChange}/><br/>
-                직업 : <input type="text" name="job" value={this.state.job} onChange={this.handleValueChange}/><br/>
-                <button type="submit">추가하기</button>
-            </form>
+            <div>
+                <Button variant="contained" color="primary" onClick={this.handleClickOpen}>
+                    Add Customer
+                </Button>
+                <Dialog open={this.state.open} onClose={this.handleClose}>
+                    <DialogTitle>Add</DialogTitle>
+
+                    <DialogContent>
+                        <input className={classes.hidden} accept="image/*" id="raised-button-file" type="file" file={this.state.file} value={this.state.fileName} onChange={this.handleFileChange} />
+                        <label htmlFor="raised-button-file">
+                            <Button variant="contained" color="primary" component="span" name="file">
+                                {this.state.fileName === "" ? "select image" : this.state.fileName}
+                            </Button>
+                        </label>
+                        <br />
+
+                        <TextField label="name" type="text" name="userName" value={this.state.userName} onChange={this.handleValueChange} /><br />
+                        <TextField label="birth" type="text" name="birth" value={this.state.birth} onChange={this.handleValueChange} /><br />
+                        <TextField label="sex" type="text" name="sex" value={this.state.sex} onChange={this.handleValueChange} /><br />
+                        <TextField label="job" type="text" name="job" value={this.state.job} onChange={this.handleValueChange} /><br />
+                    </DialogContent>
+                    <DialogActions >
+                        <Button variant="contained" color="primary" onClick={this.handleFormSubmit}>Add</Button>
+                        <Button variant="outlined" color="primary" onClick={this.handleClickClose}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
         )
     }
 }
 
-export default CustomerAdd;
+export default withStyles(styles)(CustomerAdd);
