@@ -19,14 +19,18 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 
+import Button from '@material-ui/core/Button';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
 const styles = theme => ({
   root: {
     width: "100%",
-    minWidth:1080
+    minWidth: 1080
   },
   paper: {
-    marginLeft:18,
-    marginRight:18
+    marginLeft: 18,
+    marginRight: 18
   },
   grow: {
     flexGrow: 1,
@@ -87,9 +91,9 @@ const styles = theme => ({
     fontSize: "1.0rem"
   },
   menu: {
-    marginTop:15,
-    marginBottom:15,
-    display:'flex',
+    marginTop: 15,
+    marginBottom: 15,
+    display: 'flex',
     justifyContent: 'center'
   }
 })
@@ -100,8 +104,17 @@ class App extends React.Component {
     this.state = {
       customers: "",
       completed: 0,
-      searchKeyword: ''
+      searchKeyword: '',
+      anchorEl: ''
     }
+  };
+
+  handleClick = (event) => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handleClose = () => {
+    this.setState({ anchorEl: null });
   };
 
   stateRefresh = () => {
@@ -152,8 +165,8 @@ class App extends React.Component {
 
       return data.map((c) => {
         return (
-          <Customer 
-          stateRefresh = {this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} sex={c.gender} job={c.job}
+          <Customer
+            stateRefresh={this.stateRefresh} key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} sex={c.gender} job={c.job}
           />
         )
       });
@@ -164,13 +177,22 @@ class App extends React.Component {
       <AppBar position="static" >
         <Toolbar>
           <IconButton
-            edge="start"
             className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
+            aria-controls="simple-menu" aria-haspopup="true" onClick={this.handleClick}
           >
             <MenuIcon />
           </IconButton>
+          <Menu
+            id="simple-menu"
+            anchorEl={this.state.anchorEl}
+            keepMounted
+            open={Boolean(this.state.anchorEl)}
+            onClose={this.handleClose}
+          >
+            <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+            <MenuItem onClick={this.handleClose}>My account</MenuItem>
+            <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+          </Menu>
           <Typography className={classes.title} variant="h6" noWrap>
             Customer Management System
           </Typography>
@@ -196,7 +218,7 @@ class App extends React.Component {
       <div className={classes.menu}>
         <CustomerAdd stateRefresh={this.stateRefresh} />
       </div>
-      <Paper className = {classes.paper}>
+      <Paper className={classes.paper}>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
